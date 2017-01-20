@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <style>
+
+    body{
+      font-family: helvetica;
+      text-align: center;
+      background-image: url("images/grace-montage.jpg");
+      color:#242E34;
+    }
+    .main{
+      width:700px;
+      margin: 0 auto;
+      margin-top:5%;
+      background-color:#fff;
+      border: 1px solid #fff;
+      border-radius:3px;
+      padding:3%;
+    }
+
+    button{
+     height: 50px;
+     width:100px;
+     background-color: #33BAFF;
+     color: #fff;
+     font-size: 14px;
+     font-weight: bold;
+     border-radius: 3px;
+     border: 2px solid #33BAFF;
+     cursor: pointer;
+   }
+
+  </style>
+  </head>
+
+  <body>
+    <div class="main">
+    <h1>Random Grace</h1>
+    <p>Play a video from YouTuber Grace Helbig at random. Because I don't know!!</p>
+
+    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
+    <div id="player"></div>
+
+    <h3 id="videoTitle"></h3>
+
+    <button onclick="randomize()">Random Grace!</button>
+
+  </div>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script>
+
+      var video, videoAr;
+
+      /**
+        Load JSON, call getRandomVid fn
+      **/
+      $.getJSON("output.json", function(json) {
+        videoAr = json;
+        getRandomVid();
+      });
+
+
+      var player;
+      function onYouTubeIframeAPIReady() {
+        getPlayer();
+      }
+
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      function getPlayer(){
+
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: video.videoId,
+          events: {
+            'onReady': onPlayerReady
+          }
+        });
+      }
+
+      /**
+        Get a random integer, use as index to select video from video array, update title element
+      **/
+      function getRandomVid(){
+        var randomInt = Math.floor(Math.random() * videoAr.length) + 1;
+        video = videoAr[randomInt];
+        $('h3#videoTitle').html(video.title);
+      }
+
+      function randomize(){
+        getRandomVid();
+        player.stopVideo();
+        player.loadVideoById(video.videoId);
+      }
+
+
+    </script>
+  </body>
+</html>
